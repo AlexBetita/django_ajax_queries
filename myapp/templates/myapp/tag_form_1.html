@@ -1,0 +1,34 @@
+{% load static %}      {# only for your own static files, if any #}
+<!DOCTYPE html>
+<html>
+  <head>
+    {{ form.media }}
+    {# → this will output:
+         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+         <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+         <link   href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+         <script src="{% static 'ajax_select/ajax_select.js' %}"></script>
+       #}
+  </head>
+  <body>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.tags }}
+      {{ form.category }}
+      {{ form.user_id }}
+      <button>Submit</button>
+    </form>
+
+    <script>
+      (function($){
+        $(function(){
+          // if your extras can change, refresh them here
+          RefreshLookup("tags", {
+            category: $("#id_category").val(),
+            user_id:  $("#id_user_id").val()
+          });
+        });
+      })(django.jQuery);
+    </script>
+  </body>
+</html>

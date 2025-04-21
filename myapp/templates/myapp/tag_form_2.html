@@ -1,0 +1,25 @@
+{% load static ajax_select_tags %}
+<!DOCTYPE html>
+<html>
+  <head>
+    {{ form.media }}
+  </head>
+  <body>
+    <form method="post">{% csrf_token %}
+      {{ form.tags }}
+      {{ form.category }}
+      {{ form.user_id }}
+      <button type="submit">Submit</button>
+    </form>
+    <script>
+    (function($){
+      $(function(){
+        // if category or user_id can change on the page, call RefreshLookup()
+        $("#id_category").on("change", function(){
+          RefreshLookup("tags", { category: $(this).val() });
+        });
+      });
+    })(django.jQuery);
+    </script>
+  </body>
+</html>

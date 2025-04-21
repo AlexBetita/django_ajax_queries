@@ -1,0 +1,70 @@
+{% load static %}
+<html>
+  <head>{{ form.media }}</head>
+  <body>
+    <div id="ad_id" data-value="8837"></div>
+    <div id="ad_type" data-value="sponsored"></div>
+    <form method="post">{% csrf_token %}
+      <div>
+        {{ form.category.label_tag }}<br>
+        {{ form.category }}
+      </div>
+
+      <div>
+        {{ form.user_id.label_tag }}<br>
+        {{ form.user_id }}
+      </div>
+
+      <div>
+        Search <br>
+        {{ form.tags }}
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+    <script>
+    (function($){
+      $(function(){
+        $('#id_tags').autocomplete('destroy');
+        $('#id_tags').autocomplete({
+          minLength: 1,
+          source: function(request, response){
+          const cat = $('#id_category').val();
+          const uid = $('#id_user_id').val();
+
+          const adId = $('#ad_id').data('value') || $('#ad_id').text();
+          const adType = $('#ad_type').data('value') || $('#ad_type').text();
+
+          console.log('📤 sending', {
+            term: request.term,
+            category: cat,
+            user_id: uid,
+            ad_id: adId,
+            ad_type: adType
+          });
+
+          $.getJSON("{% url 'ajax_lookup' channel='tags' %}", {
+            term:     request.term,
+            category: cat,
+            user_id:  uid,
+            ad_id:    adId,
+            ad_type:  adType
+          }, response);
+        },
+          select: function(evt, ui){
+            $('#id_tags__id')
+              .empty()
+              .append($('<option>', {
+                value: ui.item.value,
+                text: ui.item.label,
+                selected: true
+              }));
+            $(this).val(ui.item.label);
+            return false;
+          }
+        });
+      });
+    })(jQuery);
+    </script>
+  </body>
+</html>
